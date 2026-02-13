@@ -8,7 +8,7 @@ import os
 import tempfile
 from datetime import datetime
 
-from parts import *
+from lib import *
 from py_util.collections import Optional
 
 # TODO make this upload to S3 bucket regardless of validation and then run a separate cronjob for validation at the end of the day for batching

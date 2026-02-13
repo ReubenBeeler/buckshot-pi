@@ -1,15 +1,10 @@
 [project]
 name = "buckshot-pi"
 version = "0.1.0"
-description = "Add your description here"
+description = "Runs autonomous data ingestion on Raspberry Pi for an AWS buckshot project"
 readme = "README.md"
 requires-python = "==3.13.5"
-dependencies = [
-	"boto3>=1.42.45",
-	"boto3-stubs[all]>=1.42.45",
-	"dotenv>=0.9.9",
-	"speciesnet>=5.0.3",
-]
+dependencies = ["boto3>=1.42.45", "boto3-stubs[all]>=1.42.45", "dotenv>=0.9.9"]
 
 # fuck it
 [tool.uv]
