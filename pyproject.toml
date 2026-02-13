@@ -1,0 +1,25 @@
+[project]
+name = "buckshot-pi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "==3.13.5"
+dependencies = [
+	"boto3>=1.42.45",
+	"boto3-stubs[all]>=1.42.45",
+	"dotenv>=0.9.9",
+	"speciesnet>=5.0.3",
+]
+
+# fuck it
+[tool.uv]
+index-strategy = "unsafe-best-match"
+resolution = "lowest-direct"
+
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[[tool.uv.index]]
+name = "piwheels"
+url = "https://www.piwheels.org/simple"
