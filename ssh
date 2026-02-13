@@ -1,6 +1,6 @@
 #!/bin/bash
 
-{ # this context block is here to prevent TOCTOU
+{ # this context block is here to prevent TOCTOU when scripting
 	if [[ $# -ne 0 ]]; then
 		echo $0: error: this script does not take any arguments! >&2
 		exit -1

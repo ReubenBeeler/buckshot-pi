@@ -12,7 +12,7 @@ def require_env[T: Callable](*vars: str) -> Callable[[T], T]:
 		if the required environment variables are present, otherwise raises an EnvironmentError
 	:rtype: Callable[[Callable[..., Any]], None]
 	'''
-	missing_env_vars = [var for var in vars if var not in os.environ]
+	missing_env_vars = [var for var in vars if os.getenv(var, '') == '']
 	if missing_env_vars:
 		raise EnvironmentError(f"Missing environment variables: {', '.join(missing_env_vars)}")
 	
