@@ -3,7 +3,8 @@ import boto3
 from typing import Mapping
 from mypy_boto3_s3 import S3Client
 
-from lib.require_env import require_env
+from .check_AWS_response import check_AWS_response
+from .require_env import require_env
 
 @require_env('AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_REGION', 'AWS_BUCKET')
 def upload(*, input_path:str, s3_output_path:str, metadata:Mapping[str, str]|None=None) -> None:
@@ -16,14 +17,24 @@ def upload(*, input_path:str, s3_output_path:str, metadata:Mapping[str, str]|Non
 
 	AWS_BUCKET:str = os.environ['AWS_BUCKET']
 
-	print(f"Pushing to AWS S3 {AWS_BUCKET}")
-
 	with open(input_path, 'rb') as f:
-		s3_client.put_object(
-			Bucket=AWS_BUCKET,
-			Key=s3_output_path,
-			Body=f,
-			ContentType='image/jpg',
-			StorageClass='INTELLIGENT_TIERING',
-			Metadata=metadata # pyright: ignore[reportArgumentType]
-		)
+		# why is the api like this...
+		if metadata is None:
+			response:dict = s3_client.put_object(
+				Bucket=AWS_BUCKET,
+				Key=s3_output_path,
+				Body=f,
+				ContentType='image/jpg',
+				StorageClass='INTELLIGENT_TIERING'
+			) # pyright: ignore[reportAssignmentType]
+		else:
+			response:dict = s3_client.put_object(
+				Bucket=AWS_BUCKET,
+				Key=s3_output_path,
+				Body=f,
+				ContentType='image/jpg',
+				StorageClass='INTELLIGENT_TIERING',
+				Metadata=metadata
+			) # pyright: ignore[reportAssignmentType]
+	
+	check_AWS_response(response, f'failed to put object at {s3_output_path}')

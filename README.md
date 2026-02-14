@@ -28,23 +28,7 @@ For `buckshot-pi` to run autonomously, it uses `cron`. The `./setup.sh` file sho
 
 1. ### Missing `picamera2` or other system packages
 
-   If you see something like this,
-
-   ```bash
-   reuben@pi-zero-2-W-buckshot:~/Code $ ./cronjob.sh
-   Traceback (most recent call last):
-   File "/home/reuben/Code/main.py", line 11, in <module>
-   	from lib import *
-   File "/home/reuben/Code/lib/__init__.py", line 1, in <module>
-   	from .capture import *
-   File "/home/reuben/Code/lib/capture.py", line 7, in <module>
-   	from picamera2 import Picamera2 # pyright: ignore[reportMissingImports]
-   	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   ModuleNotFoundError: No module named 'picamera2'
-   reuben@pi-zero-2-W-buckshot:~/Code $
-   ```
-
-   it means that `uv` failed to find you `picamera2` module, probably because:
+   If you see an error message like `ModuleNotFoundError: No module named 'picamera2'`, it means that `uv` failed to find the `picamera2` module, probably for one of the following reasons:
    - Your venv is not using your system python packages. <br />
      You can check with
 
@@ -56,6 +40,7 @@ For `buckshot-pi` to run autonomously, it uses `cron`. The `./setup.sh` file sho
 
    ```bash
    uv venv --system-site-packages --clear
+   uv sync
    ```
 
    - `picamera2` is not installed. <br/>

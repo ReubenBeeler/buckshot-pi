@@ -1,7 +1,6 @@
 import os
 from typing import Callable
 
-
 def require_env[T: Callable](*vars: str) -> Callable[[T], T]:
 	'''
 	Ensures environment variables are present when the target function is loaded

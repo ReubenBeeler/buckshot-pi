@@ -1,6 +1,8 @@
 #!/bin/bash
 
 { # this context block is here to prevent TOCTOU when scripting
+	set -e
+
 	if [[ $# -ne 0 ]]; then
 		echo $0: error: this script does not take any arguments! >&2
 		exit -1
@@ -14,9 +16,11 @@
 
 	THIS_FILE=$(basename "$0")
 
-	if [[ -d 'copyback' ]]; then
-		rm -rf copyback
+	if [[ -d '.copyback' ]]; then
+		rm -rf .copyback
 	fi
+
+	ssh -t "$BUCKSHOT_SSH_HOSTNAME" "mkdir -p $BUCKSHOT_PROJECT_DIR"
 
 	rsync -avz --delete \
 		--exclude='.venv/' \
@@ -33,15 +37,15 @@
 	./pi_util/drop_pi_caches.sh
 
 	echo -e \\nStarting interactive shell...
-	ssh -t "$BUCKSHOT_SSH_HOSTNAME" "cd $BUCKSHOT_PROJECT_DIR && mkdir copyback && bash -l" # TODO make safer injection by using pi's env vars
+	ssh -t "$BUCKSHOT_SSH_HOSTNAME" "cd $BUCKSHOT_PROJECT_DIR && mkdir .copyback && bash -l" # TODO make safer injection by using pi's env vars
 
 	echo -e \\nCleaning up...
 	./pi_util/drop_pi_caches.sh
 
-	if ssh "$BUCKSHOT_SSH_HOSTNAME" "test -d '$BUCKSHOT_PROJECT_DIR/copyback/'"; then
-		rsync -avz "$BUCKSHOT_SSH_HOSTNAME:$BUCKSHOT_PROJECT_DIR/copyback/" ./copyback/
+	if ssh "$BUCKSHOT_SSH_HOSTNAME" "test -d '$BUCKSHOT_PROJECT_DIR/.copyback/'"; then
+		rsync -avz "$BUCKSHOT_SSH_HOSTNAME:$BUCKSHOT_PROJECT_DIR/.copyback/" ./.copyback/
 	else
-		echo -e "\\nNothing to copy back: remote directory '$BUCKSHOT_SSH_HOSTNAME:$BUCKSHOT_PROJECT_DIR/copyback/' does not exist"
+		echo -e "\\nNothing to copy back: remote directory '$BUCKSHOT_SSH_HOSTNAME:$BUCKSHOT_PROJECT_DIR/.copyback/' does not exist"
 	fi
 
 	exit 0
