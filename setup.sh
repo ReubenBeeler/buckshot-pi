@@ -18,3 +18,13 @@ ssh "$BUCKSHOT_SSH_HOSTNAME" 'curl -LsSf https://astral.sh/uv/install.sh | sh'
 
 # Create the venv and install dependencies
 ssh "$BUCKSHOT_SSH_HOSTNAME" "bash -lc 'mkdir -p $BUCKSHOT_PROJECT_DIR && cd $BUCKSHOT_PROJECT_DIR && uv venv --system-site-packages --clear && uv lock && uv sync'"
+
+# TODO create the crontab
+
+# # Upload a photo every 5 minutes from 5:45am-9:15am daily
+# 45-55/5 5 * * * reuben cd $BUCKSHOT_PROJECT_DIR && ./cronjob.sh main.py >> /var/log/buckshot.log 2>&1
+# */5 6-20 * * * reuben cd $BUCKSHOT_PROJECT_DIR && ./cronjob.sh main.py >> /var/log/buckshot.log 2>&1
+# 0-15/5 21 * * * reuben cd $BUCKSHOT_PROJECT_DIR && ./cronjob.sh main.py >> /var/log/buckshot.log 2>&1
+
+# # Validate photos at 9:30pm daily
+# 30 21 * * * reuben cd $BUCKSHOT_PROJECT_DIR && ./cronjob.sh lib/validate.py >> /var/log/buckshot.log 2>&1
