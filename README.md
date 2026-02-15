@@ -3,12 +3,12 @@
 Buckshot-Pi is a tool for developing and deploying Buckshot's data ingestion on a Raspberry Pi. <br/>
 Buckshot-Pi captures images using a Pi Camera Module 2, uploads photography to AWS S3, and screens for wildfile in daily batches using SpeciesNet on AWS Lambda, all of which happens autonomously with `cron`. To view the wildlife gallery, go to [this link does not exist yet](https://buckshot.reubenbeeler.me/gallery).
 
-## Design Choices
+## ✨ Design Choices
 
-- `buckshot-pi` is a 'development tool' because lightweight Raspberry Pis (like my Pi Zero 2 W) cannot serve a stable SSH server for VS Code. This repository allows you to develop in an IDE locally while interacting with the raspi using convenient scripts that automatically handle file syncing, memory management, and more.
+- Buckshot-Pi is considered a 'tool' because lightweight Raspberry Pis (like my Pi Zero 2 W) cannot serve a stable SSH server for VS Code. This repository allows you to develop in an IDE locally while interacting with the raspi using convenient scripts that automatically handle file syncing, memory management, and more.
 - This project is designed to take photos on a regular interval (15 minutes) rather than taking photos in response to motion detection. I opted for interval-based photography due to ease-of-use and budget constraints, although I might implement motion detection via a long-range outdoor PIR sensor in the future.
 
-## Requirements
+## ⚙️ Requirements
 
 - You should be running Linux (MacOS probably works too)
 - You should have SSH access to a Raspberry Pi SBC with an attached Raspberry Pi Camera Module 2. My raspi was flashed with 64-bit Raspberry Pi OS Lite (similar operating systems should work too).
@@ -16,46 +16,44 @@ Buckshot-Pi captures images using a Pi Camera Module 2, uploads photography to A
   - The Camera Module 2 has dynamic exposure but is quite bad for taking photos in the dark because its maximum exposure setting is still too low to see anything.
   - Be careful to weather-proof your pi. If it's outside, consider an enclosure like [TODO link `buckshot-pi-zero-2-enclosure`] to prevent corrosion from water/humidity.
 
-If you want to build this project, you're in the right place! However, be prepared for some debugging. To make the process easier for you than it was for me, I've included some useful scripts and setup instructions to help you along the way.
+If you want to build this project, you're in the right place! However, be prepared for some debugging. To make the process easier for you, I've included some useful scripts and setup instructions to help you along the way.
 
-## Setup Instructions
+## 🛠️ Setup Instructions
 
-Run `./setup.sh` for some guided help. If you're having trouble with any of the scripts, make sure that all your environment variables are set in `.env` using `.env.example` as a template. Many of the python files can be tested independently by invoking them directly.
+Run `./setup.sh` for some guided help. If you're having trouble with any of the scripts, make sure that all your environment variables are set in `.env` using `.env.example` as a template. Also note that many of the python files can be invoked directly for debugging purposes.
 
-For `buckshot-pi` to run autonomously, it uses `cron`. The `./setup.sh` file should automatically set up the cron job at `/etc/cron.d/buckshot`, which executes `cronjob.sh` every 15 minutes during daylight. Edit `/etc/cron.d/buckshot` to change the hours/frequency that it runs. The cron job's log file is `/var/log/buckshot.log`.
+For Buckshot-Pi to run autonomously, it uses `cron`. The `./setup.sh` file automatically sets up the cron job at `/etc/cron.d/buckshot`, which takes a photo every 5 minutes during daylight and runs batched validation at the end of the day. To change the hours or frequency of the cron job, edit `/etc/cron.d/buckshot`. For troubleshooting, check the cron job's log file at `/var/log/buckshot.log`.
 
-## Common Problems & Solutions
+## ‼️ Common Problems & Solutions
 
-1. ### Missing `picamera2` or other system packages
+### Missing `picamera2` or other system packages
 
-   If you see an error message like `ModuleNotFoundError: No module named 'picamera2'`, it means that `uv` failed to find the `picamera2` module, probably for one of the following reasons:
-   - Your venv is not using your system python packages. <br />
-     You can check with
+   If you see an error message on your raspi like `ModuleNotFoundError: No module named 'picamera2'`, it means that `uv` failed to find the `picamera2` module, probably for one of the following reasons:
+   1. Your venv is not using your system python packages (`picamera2` is usually installed by default on Raspberry Pis). <br />
+       - ❔ You can check with
+         ```bash
+         grep -E "include-system-site-packages\s*=\s*true" .venv/pyvenv.cfg 1>/dev/null 2>/dev/null && echo '✅ uv is using system site packages' || echo '❌ uv is NOT using system site packages'
+         ```
 
-   ```bash
-   grep -E "include-system-site-packages\s*=\s*true" .venv/pyvenv.cfg 1>/dev/null 2>/dev/null && echo '✅ uv is using system site packages' || echo '❌ uv is NOT using system site packages'
-   ```
+       - 🔧 You can fix it with
+         ```bash
+         uv venv --system-site-packages --clear
+         uv sync
+         ```
 
-   You can fix it with
+   2. `picamera2` is not installed. <br/>
+       - ❔ You can check with
 
-   ```bash
-   uv venv --system-site-packages --clear
-   uv sync
-   ```
-
-   - `picamera2` is not installed. <br/>
-     You can check with
-
-   ```bash
-   /usr/bin/python -c 'import picamera2' 2>/dev/null && echo '✅ picamera2 is installed' || echo '❌ picamera2 is missing'
-   ```
-
-   You can fix it with
-
-   ```bash
-   sudo apt update
-   sudo apt install -y python3-picamera2
-   ```
+         ```bash
+         /usr/bin/python -c 'import picamera2' 2>/dev/null && echo '✅ picamera2 is installed' || echo '❌ picamera2 is missing'
+         ```
+  
+       - 🔧 You can fix it with
+  
+         ```bash
+         sudo apt update
+         sudo apt install -y python3-picamera2
+         ```
 
 ## TODOs
 
