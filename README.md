@@ -1,7 +1,7 @@
 # Buckshot-Pi
 
-`buckshot-pi` is used for developing and deploying `buckshot`'s data ingestion on a Raspberry Pi. <br />
-`buckshot-pi` captures images using a Raspberry Pi Camera Module 2, screens the images for wildlife using SpeciesNet hosted on AWS Lambda, and uploads all wildlife pictures to a gallery on AWS S3, all of which happens autonomously with `cron`. To view the wildlife gallery, go to [this link does not exist yet](https://buckshot.reubenbeeler.me/gallery).
+Buckshot-Pi is a tool for developing and deploying Buckshot's data ingestion on a Raspberry Pi. <br/>
+Buckshot-Pi captures images using a Pi Camera Module 2, uploads photography to AWS S3, and screens for wildfile in daily batches using SpeciesNet on AWS Lambda, all of which happens autonomously with `cron`. To view the wildlife gallery, go to [this link does not exist yet](https://buckshot.reubenbeeler.me/gallery).
 
 ## Design Choices
 
